@@ -7,10 +7,28 @@
     <title>Most Liked Fossils</title>
   </head>
   <body>
-    <div class="fossil-div">
-      <h3>{{ fossils[0].name }}</h3>
-      <h2>Liked {{ fossils[0].num_likes }} times.</h2>
-      <img src="{{ fossils[0].img }}" />
-    </div>
+  {% extends 'base.html.njk' %}
+  {%block content%}
+    <h1>Welcome, {{ userName }}</h1>
+  <div class="fossil-list">
+    {% for fossilKey, fossil in fossils %}
+      <div class="fossil-div">
+        <h3>{{ userName }}, this is a {{ fossil.name }}</h3>
+        <h2>Liked {{ fossil.num_likes }} times.</h2>
+        <img src="{{ fossil.img }}" alt="{{ fossil.name }}" />
+      </div>
+    {% endfor %}
+   
+    <h2>Like a Fossil</h2>
+  <form action="/like-fossil" method="post">
+    <label for="fossil-select">Select a Fossil:</label>
+    <select id="fossil-select" name="fossilId">
+      {% for fossilKey, fossil in fossils %}
+        <option value="{{ fossilKey }}">{{ fossil.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Like">
+  </form>
+  {%endblock%}
   </body>
 </html>

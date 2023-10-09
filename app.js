@@ -60,12 +60,56 @@ const OTHER_FOSSILS = [
   },
 ];
 
-// TODO: Replace this comment with your code
+app.get('/',(req,res)=>{
+  
+  const userName = req.session.name
+
+  if(userName){
+    res.redirect('/top-fossils')
+  }else{
+    res.render('homepage.html.njk')
+  }
+})
+
+
+app.get('/get-name', (req,res)=>{
+  const { name } = req.query
+
+  if (name) {
+    req.session.name = name; 
+  }
+
+  res.redirect('/top-fossils');
+});
+
+
+
+
+app.get('/top-fossils', (req, res) => {
+
+  const userName = req.session.name
+
+  if(userName){
+      res.render('top-fossils.html.njk', { userName, fossils: MOST_LIKED_FOSSILS })
+  } else{
+    res.redirect('/')
+  }
+
+})
 
 app.get('/random-fossil.json', (req, res) => {
   const randomFossil = lodash.sample(OTHER_FOSSILS);
   res.json(randomFossil);
 });
+app.post('/like-fossil',(req,res)=>{
+  const {fossilId} = req.body
+
+  if(MOST_LIKED_FOSSILS[fossilId]){
+    MOST_LIKED_FOSSILS[fossilId].num_likes++
+    res.render('thank-you.html.njk',{userName: req.session.name})
+  }
+})
+
 
 ViteExpress.listen(app, port, () => {
   console.log(`Server running on http://localhost:${port}...`);
